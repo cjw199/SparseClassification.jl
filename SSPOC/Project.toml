@@ -1,0 +1,13 @@
+name = "SSPOC"
+uuid = "09c023d9-d1f6-4c1e-a7c6-49a536ce80ce"
+authors = ["coreywalker "]
+version = "0.1.0"
+
+[deps]
+COSMO = "1e616198-aa4e-51ec-90a2-23f7fbd31d8d"
+Convex = "f65535da-76fb-5f13-bab9-19810c17039a"
+Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
+IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
