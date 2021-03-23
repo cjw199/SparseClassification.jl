@@ -1,3 +1,7 @@
+## Based on the work of Brunton, et al
+## B. W. Brunton, S. L. Brunton, J. L. Proctor, J. N. Kutz. Sparse sensor placement optimization for classification.  *SIAM Journal on Applied Mathematics*, 76(5):2099-2122, 2016.
+##
+
 module SSPOC
 
 const DIR = @__DIR__
