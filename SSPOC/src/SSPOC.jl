@@ -6,7 +6,7 @@ Pkg.activate(DIR*"/../")
 
 using DelimitedFiles, LinearAlgebra, Statistics, Convex, COSMO, StatsBase, Flux
 using Flux.Data:DataLoader
-using Flux.Losses: logitcrossentropy, logitbinarycrossentropy
+using Flux.Losses: logitbinarycrossentropy
 using Flux: onecold, onehot
 using Flux: onehotbatch
 using StatsBase, PyCall
@@ -19,6 +19,7 @@ dogs = Float32.(readdlm(DIR*"/../data/dogs.csv", ',')) #|> x -> x ./ 255
 function run_demo(cats, dogs, n, r)
     out=zeros(n)
     for i = 1:n
+        @label start
         cats = deepcopy(cats[:, sample(1:size(cats, 2), size(cats, 2), replace=false)]);
         dogs = deepcopy(dogs[:, sample(1:size(dogs, 2), size(dogs, 2), replace=false)]);
 
@@ -27,12 +28,14 @@ function run_demo(cats, dogs, n, r)
         test1 = [cats[:,61:end] dogs[:,61:end]];
 
         # compute PCA and project data to get eigenrepresentation X̃
-        mean_tr = mean(train1, dims=2);
-        train_centered = train1 - mean_tr * ones(1, size(train1, 2));
-        u, s, v = svd(train_centered)
+        n, m = size(train1)
+        ## centering matrix
+        C = I(m) - (1/m) * ones(m,m)
+        train_centered = train1 * C
+        U, S, V = svd(train_centered)
         # plt.plot(s)
         # plt.show()
-        Ψ = u[:,1:r];
+        Ψ = U[:,1:r];
         X̃ = Ψ' * train1;
 
         # compute maximally discriminating component using LDA
@@ -65,6 +68,11 @@ function run_demo(cats, dogs, n, r)
         problem = minimize(objective, constraint);
         solve!(problem, solver, silent_solver=true)
         ## check linear separability imposed by sparse vector S
+        if isnothing(s.value)
+            @warn "Encountered a numerical error during optimization!  Repeating sample..."
+            num_err += 1
+            @goto start
+        end
         S = reshape(s.value, n)
         sep = (Ψ' * S)' * (Ψ' * train1)
         # plt.bar(1:length(sep), sep)
@@ -78,7 +86,7 @@ function run_demo(cats, dogs, n, r)
         # C = (abs.(S) .> 0.35)
         # n = norm(S,2) / (2 * 2 * 60)
         # C = (abs.(S) .> n)
-        thresh = abs(S[reverse(sortperm(abs.(S)))[51]])
+        thresh = abs(S[reverse(sortperm(abs.(S)))[21]])
         C = abs.(S) .> thresh;
         #C = zeros(length(S))
         #sum(C)
