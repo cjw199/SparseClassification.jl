@@ -14,7 +14,7 @@ This example requires the installation of Julia version 1.3 or higher and Jupyte
 
 1. Build the package, by running from the project directory
 
-`julia -e "using Pkg; Pkg.activate(\"SSPOC\"); Pkg,build();"`
+`julia -e "using Pkg; Pkg.activate(\"SSPOC\"); Pkg.build();"`
 
 This will install the required packages and create the project-specific Julia kernel for Jupyter (Julia_SSPOC_demo).
 
